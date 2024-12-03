@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALCULATOR</title>
+    <link rel="stylesheet" href="calc.css" />
+</head>
+<body>
+    <div class="calc">
+        <input type="text" id="display" class="display" disabled><br>
+        <button class="CLEAR" onclick="clearBut()">RESET</button>
+        <table>
+            <tr>
+                <td><button onclick="addN('7')">7</button></td>
+                <td><button onclick="addN('8')">8</button></td>
+                <td><button onclick="addN('9')">9</button></td>
+                <td><button class="operator" onclick="addOper('/')">/</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="addN('4')">4</button></td>
+                <td><button onclick="addN('5')">5</button></td>
+                <td><button onclick="addN('6')">6</button></td>
+                <td><button class="operator" onclick="addOper('*')">*</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="addN('1')">1</button></td>
+                <td><button onclick="addN('2')">2</button></td>
+                <td><button onclick="addN('3')">3</button></td>
+                <td><button class="operator" onclick="addOper('-')">-</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="addN('0')">0</button></td>
+                <td><button onclick="addN('.')">.</button></td>
+                <td><button class="equal" onclick="calculateEqual()">=</button></td>
+                <td><button class="operator" onclick="addOper('+')">+</button></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        let currentNumber = ''; // текущее число, которое вводим
+        let previousNumber = ''; // предыдущее число
+        let operator = ''; // текущий оператор
+        let result = null; // результат последней операции
+
+        let display = document.getElementById('display');
+
+        // Функция для добавления чисел или точки
+        function addN(value) {
+            if (result !== null) {
+                // Если результат уже вычислен, начинаем вводить новое число
+                currentNumber = value;
+                result = null;
+            } else {
+                currentNumber += value; // Добавляем значение к текущему числу
+            }
+            display.value = currentNumber;
+        }
+
+        // Функция для добавления оператора
+        function addOper(op) {
+            if (currentNumber === '') return; // Если нет числа, ничего не делаем
+            if (previousNumber !== '') {
+                // Если предыдущее число есть, вычисляем результат
+                calculateResult();
+            }
+            operator = op;
+            previousNumber = currentNumber; // Сохраняем текущее число как предыдущее
+            currentNumber = ''; // Очищаем текущее число для ввода следующего
+            display.value = previousNumber + " " + operator; // Показываем операцию
+        }
+
+        // Функция для очистки
+        function clearBut() {
+            currentNumber = '';
+            previousNumber = '';
+            operator = '';
+            result = null;
+            display.value = '';
+        }
+
+        // Функция для вычисления результата
+        function calculateResult() {
+            if (previousNumber === '' || currentNumber === '' || operator === '') return;
+
+            let num1 = parseFloat(previousNumber);
+            let num2 = parseFloat(currentNumber);
+
+            switch (operator) {
+                case '+':
+                    result = num1 + num2;
+                    break;
+                case '-':
+                    result = num1 - num2;
+                    break;
+                case '*':
+                    result = num1 * num2;
+                    break;
+                case '/':
+                    result = num2 === 0 ? 'Error' : num1 / num2;
+                    break;
+            }
+
+            display.value = result; // Отображаем результат
+            previousNumber = result.toString(); // Сохраняем результат как новое предыдущее число
+            currentNumber = ''; // Очищаем текущее число для нового ввода
+        }
+
+        // Функция для вычисления при нажатии "="
+        function calculateEqual() {
+            if (currentNumber !== '') {
+                calculateResult(); // Вычисляем результат
+            }
+            operator = ''; // Очищаем оператор
+            currentNumber = result.toString(); // Сохраняем результат для следующего ввода
+            display.value = result; // Показываем результат
+        }
+    </script>
+</body>
+</html>
